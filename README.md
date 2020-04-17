@@ -1,2 +1,2 @@
-# Linux
-Careful You Might Learn Something
+# Shell
+Learning Shell Scripting
