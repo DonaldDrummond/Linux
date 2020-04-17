@@ -1,3 +1,7 @@
+Rivia Linux Github - https://github.com/hessifer/Linux/tree/master/Rivia_Python
+Working with Text: https://github.com/hessifer/Linux/blob/master/Rivia_Python/working_with_text.txt
+Learning Linux Part I: 
+
 Agenda:
     Working Text:
         -awk
@@ -15,12 +19,59 @@ Agenda:
         -htop
         -jobs
         -kill
+            - kill -l
+                - SIGHUP
+                - SIGTERM
+                - SIGKILL
+                
         
     Man Pages:
         -how to find the format information for a file
             - man 5 passwd
         -how to find information on man
             - man man
+            
+    Info:
+        Mandatory Reading on File Descriptors: info stdin
+            
+            
+    ************* find  *************
+    1. find all the 'files' in /var/log and display to STDOUT
+    
+    2. display all files with their inode number in /var/log
+    
+    3. How would you find a file with the inode number of 12960214 on your file system
+       and display the disk utilization of that file in humam readable format? Make sure
+       you handle STDERR (meaining do not display it).
+    
+    
+    Commands:
+        find /var/log -type f -exec ls -ial {} \;
+        find / -inum 12960214 -exec du -h {} \; 2> /dev/null
+        find / -type f -name '*service*' -print 2> /dev/null
+        find / -type f -size +10M -exec ls -lh {} \; 2> /dev/null
+        find / -type f -size +10M -mtime +30 -exec ls -lh {} \; 2> /dev/null
         
         
         
+    
+        
+        
+    ###miles###
+    
+    find /var/log -type f
+    
+    
+    1. How would I use the above command to display the output so that the most recent files written to are
+       displayed first? Be sure to suppress any errors.
+       
+       find /var/log -type f | sort | tail 
+       
+    #### barney 
+    find /var/log -type f -printf "%A+ %p\n" | sort -r | head
+    
+    
+    ********
+    
+    
+    
