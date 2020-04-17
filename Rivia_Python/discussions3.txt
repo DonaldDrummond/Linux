@@ -1,0 +1,26 @@
+Agenda:
+    Working Text:
+        -awk
+        -sed
+        
+    Filesystem Commands:
+        -find
+        -lsof
+        -locate
+        -updatedb
+    
+    Process Management:
+        -ps
+        -top
+        -htop
+        -jobs
+        -kill
+        
+    Man Pages:
+        -how to find the format information for a file
+            - man 5 passwd
+        -how to find information on man
+            - man man
+        
+        
+        
