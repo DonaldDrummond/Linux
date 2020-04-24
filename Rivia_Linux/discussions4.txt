@@ -1,21 +1,81 @@
 Agenda:
+    
+    Reading: http://bash.cyberciti.biz/guide/Sending_signal_to_Processes
 
 1. Process Management
     - ps
+        - man ps
+        - ps aux
+        - ps wuaxf
+        - ps wuaxf |grep sshd |grep -v grep |awk '{print $2}' |head -n 1
+    - pgrep
+        - pgrep sshd
+        - pgrep -u root sshd
     - top
+        - Ctrl + M
+        - L
+        - H
+        - k
+        - m
+        - r
+        - R
+        - 1
+        - h
     - kill
+        - kill -l
+        - kill -9 SIGKILL
+        - kill -15 SIGTERM
+        - kill -1 SIGHUP
+        - kill [signal] %[job id]
+    - pkill
+        -[signal]
+        --signal [value]
+        -l
+        -a
     - bg
+        - % [job id]
     - fg
+        - % [job id]
     - jobs
 
 2. Loop Control Structures
     - for
+     - for i in 1 2 3 4 5; do echo ${i}; done
+     - for i in {1..5}; do echo ${i}; done
+     - for i in $(seq 1 5); do echo ${i}; done
+     - for line in `cat /etc/hosts`; do echo ${line}; done
+     - for i in {1..10}; do echo touch file${i}.htm; done
+     - for i in {1..10}; do touch file${i}.htm; done
+     - for i in {1..10}; do mv file${i}.htm file${i}.html; done
+     - for i in {1..10}; do cp file${i}.html file${i}.htm; done
+     - for f in `ls *.htm`; do mv ${f} `echo ${f} | sed 's/htm/txt/'`; done
+     - for file in /etc/*; do if [ "${file}" == "/etc/resolv.conf" ]; then countNameservers=$(grep -c nameserver /etc/resolv.conf); echo "Total ${countNameservers} nameservers defined"; break; fi; done
+     
     - while
+        - while [ 1 ]; do echo "Aaron Rogers is going to be mad as a result of the draft last night."; sleep 1; done
 
 3. Socket and File Enumeration
     - ss
+        -l
+        -4
+        -tcp
+        -udp
+        -n
+        -nn
+        
+        0 - 1023 reserverd or privileged ports
+        > 1023 fair game (could overlap with something else on your system)
     - lsof
+     - -i
+     - +M
+     - -n
     - netstat
+        -t
+        -u
+        -a
+        -n
+        -p
+        - -plant
 
 3. Practical Exercise
     1. List all processes by all users running on your system.
@@ -31,5 +91,6 @@ Agenda:
     10. Inside the directory qxopa create 10 files called file[1-10].htm
     11. Using a for loop move all the htm files to html
     12. Using a for loop move all the html files to htm
+    13. Now create a duplicate copy of the files but their extension should be .htm
 
 **********************************************************
