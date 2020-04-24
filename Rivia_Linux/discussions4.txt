@@ -1,0 +1,35 @@
+Agenda:
+
+1. Process Management
+    - ps
+    - top
+    - kill
+    - bg
+    - fg
+    - jobs
+
+2. Loop Control Structures
+    - for
+    - while
+
+3. Socket and File Enumeration
+    - ss
+    - lsof
+    - netstat
+
+3. Practical Exercise
+    1. List all processes by all users running on your system.
+    2. Determine if the sshd process is running on your system and locate its pid.
+    3. Start vi and move it to the background, confirm it is in the background with the jobs 
+       command.
+    4. Use the kill command to terminate the process associated with vi.
+    5. Launch vi to edit a file called hello.txt and place it in the background.
+    6. Use lsof to discover what files are open by the vi process.
+    7. Use netstat to determine what services are bound to what ports
+    8. Use ss to discover which services are bound to what ports on your system.
+    9. Create a directory called qxopa
+    10. Inside the directory qxopa create 10 files called file[1-10].htm
+    11. Using a for loop move all the htm files to html
+    12. Using a for loop move all the html files to htm
+
+**********************************************************
